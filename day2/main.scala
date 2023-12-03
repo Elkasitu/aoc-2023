@@ -35,6 +35,10 @@ object CubeSet {
 
 case class Game(id: Int, cubeSets: Array[CubeSet]) {
   def isValid = cubeSets.forall(_.isValid)
+  def maxRed = cubeSets.maxBy(_.red).red
+  def maxGreen = cubeSets.maxBy(_.green).green
+  def maxBlue = cubeSets.maxBy(_.blue).blue
+  def power = maxRed * maxGreen * maxBlue
 }
 
 object Game {
@@ -53,14 +57,17 @@ object Game {
 
 object Application {
   def main(args: Array[String]): Unit = {
-    val result = Source
-      .fromFile("input.txt")
-      .getLines
-      .map((d) => Game(d))
+    val source = Source.fromFile("input.txt")
+    val games = source.getLines.map((d) => Game(d)).toArray
+    val result1 = games
       .filter(_.isValid)
       .map(_.id.toInt)
       .sum
-    println(s"The sum of valid Game IDs is $result")
+    val result2 = games
+      .map(_.power)
+      .sum
+    println(s"The sum of valid Game IDs is $result1, the sum of power is $result2")
+    source.close()
   }
 }
 
